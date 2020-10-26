@@ -1,0 +1,13 @@
+**set working directory**
+use 2018-200, clear
+g y5 = (p208a <=5 & p203b==3)
+bysort conglome vivienda hogar p203a: egen h5 = max(y5)
+replace h5 = 0 if (p203b > 2)
+merge 1:1 conglome vivienda hogar codperso using 2018-500
+recode  ocu500  (1=1 "ocupado") (2=2 "desocupado") (3/4=3 "Inactiva"), gen(pea_o)
+keep if p204==1 & p205==2 | p204==2 & p206==1 //se puede eliminar
+tab pea_o [iw=fac500a] if pea_o>0
+ tab pea_o [iw=fac500a] if pea_o>0 & p207==2
+ tab pea_o h5 [iw=fac500a] if pea_o>0 & p207==2
+ tab h5 [iw=fac500a] if pea_o>0 & p207==2
+ https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/Lib1678/libro.pdf /// pag 202
